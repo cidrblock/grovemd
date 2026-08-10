@@ -1,0 +1,24 @@
+[Unit]
+Description=Grove Markdown workspace
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+ContainerName=grovemd
+Image=localhost/grovemd:latest
+PublishPort=127.0.0.1:8096:8080
+# Run as host user bthornto (uid 1000). No :Z relabel — Documents/Grove stays
+# normal home files so host mv/cp into the tree works without SELinux fights.
+Volume=/var/home/bthornto/Documents/Grove:/data
+Environment=DATA_ROOT=/data
+Environment=STATIC_DIR=/app/frontend/dist
+UserNS=keep-id:uid=1000,gid=1000
+SecurityLabelDisable=true
+
+[Service]
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=120
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,17 @@
+# Grove — install to /etc/traefik/dynamic/grovemd.yml
+http:
+  routers:
+    grovemd:
+      rule: "Host(`grove.20665.net`)"
+      service: grovemd
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: "*.20665.net"
+  services:
+    grovemd:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:8096"
