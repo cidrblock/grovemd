@@ -37,7 +37,7 @@ cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-export DATA_ROOT=/var/home/bthornto/Documents/Grove
+export DATA_ROOT=/mnt/space16/grove-data
 mkdir -p "$DATA_ROOT"
 uvicorn grovemd.main:app --reload --port 8080
 ```
@@ -63,9 +63,9 @@ pytest
 
 ```bash
 podman build -t localhost/grovemd:latest -f Containerfile .
-mkdir -p /var/home/bthornto/Documents/Grove
+mkdir -p /mnt/space16/grove-data
 podman run --rm -p 127.0.0.1:8096:8080 \
-  -v /var/home/bthornto/Documents/Grove:/data:Z \
+  -v /mnt/space16/grove-data:/data \
   -e DATA_ROOT=/data \
   --userns=keep-id:uid=1000,gid=1000 \
   localhost/grovemd:latest
@@ -90,7 +90,7 @@ podman run --rm -p 127.0.0.1:8096:8080 \
 
 4. Add Firewalla DNS: `grove.20665.net` → `192.168.0.36`.
 
-Notes live at `/var/home/bthornto/Documents/Grove`. Destroying the container does not delete notes.
+Notes live at `/mnt/space16/grove-data` (symlink: `~/Documents/Grove`). Destroying the container does not delete notes.
 
 Grove runs as your host UID (`UserNS=keep-id`) with SELinux labeling disabled on the container, so the notes directory stays normal home files. You can `mv` / `cp` Markdown into the tree from the host or an agent and it shows up without relabeling.
 

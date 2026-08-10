@@ -2,7 +2,7 @@
 name = "grove-mcp"
 version = "0.1.0"
 readme = "README.md"
-description = "Grove notes MCP — search/list/read Markdown under Documents/Grove"
+description = "Grove notes MCP — search/list/read Markdown under /mnt/space16/grove-data"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [

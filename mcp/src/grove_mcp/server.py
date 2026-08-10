@@ -1,4 +1,4 @@
-"""Grove MCP — Streamable HTTP tools over Documents/Grove Markdown."""
+"""Grove MCP — Streamable HTTP tools over Grove Markdown (/mnt/space16/grove-data)."""
 
 from __future__ import annotations
 

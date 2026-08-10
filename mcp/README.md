@@ -1,6 +1,6 @@
 # Grove MCP
 
-Part of the [Grove (`grovemd`)](../) monorepo. Streamable-HTTP MCP tools over the same `Documents/Grove` tree as the UI.
+Part of the [Grove (`grovemd`)](../) monorepo. Streamable-HTTP MCP tools over the same `/mnt/space16/grove-data` tree as the UI.
 
 ## Tools
 
@@ -13,7 +13,7 @@ Part of the [Grove (`grovemd`)](../) monorepo. Streamable-HTTP MCP tools over th
 
 ```bash
 cd mcp
-export DATA_ROOT=/var/home/bthornto/Documents/Grove
+export DATA_ROOT=/mnt/space16/grove-data
 uv run grove-mcp --transport streamable-http --host 127.0.0.1 --port 8000
 ```
 
@@ -28,4 +28,4 @@ systemctl --user enable --now grove-mcp.service
 - Debug: `http://127.0.0.1:3093/mcp`
 - Home Bot / OWUI (podman network): `http://grove-mcp:8000/mcp`
 
-The quadlet mounts this `mcp/` directory and `Documents/Grove` as `/data`.
+The quadlet mounts this `mcp/` directory and `/mnt/space16/grove-data` as `/data`.

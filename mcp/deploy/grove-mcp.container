@@ -9,8 +9,8 @@ ContainerName=grove-mcp
 PublishPort=127.0.0.1:3093:8000
 # Source lives in the grovemd monorepo (mcp/)
 Volume=/var/home/bthornto/github/grovemd/mcp:/app
-# Same notes tree as Grove UI — run as host user, no SELinux relabel
-Volume=/var/home/bthornto/Documents/Grove:/data
+# Same notes tree as Grove UI
+Volume=/mnt/space16/grove-data:/data
 Environment=DATA_ROOT=/data
 WorkingDir=/app
 Network=home-chat.network

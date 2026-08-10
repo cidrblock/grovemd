@@ -7,9 +7,9 @@ Wants=network-online.target
 ContainerName=grovemd
 Image=localhost/grovemd:latest
 PublishPort=127.0.0.1:8096:8080
-# Run as host user bthornto (uid 1000). No :Z relabel — Documents/Grove stays
-# normal home files so host mv/cp into the tree works without SELinux fights.
-Volume=/var/home/bthornto/Documents/Grove:/data
+# Notes on space16 (same pattern as other house services). No :Z — keep
+# host-owned files so mv/cp into the tree works without SELinux fights.
+Volume=/mnt/space16/grove-data:/data
 Environment=DATA_ROOT=/data
 Environment=STATIC_DIR=/app/frontend/dist
 UserNS=keep-id:uid=1000,gid=1000
