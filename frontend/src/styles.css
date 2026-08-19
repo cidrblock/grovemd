@@ -667,3 +667,64 @@ button.danger:hover {
 .grove-mdx-content code {
   font-family: var(--font-mono);
 }
+
+/* ── Print ─────────────────────────────────────────────────────────────── */
+@media print {
+  html,
+  body,
+  #root {
+    height: auto;
+  }
+
+  body {
+    background: none;
+  }
+
+  /* hide chrome: only the active document's content should print */
+  .topbar,
+  .sidebar,
+  .sidebar-backdrop,
+  .editor-tabs,
+  .document-header,
+  .status-bar,
+  .mdxeditor-toolbar,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  /* these ancestors clip overflow on screen; let content flow across pages */
+  .workspace,
+  .workspace-body,
+  .main,
+  .document-pane,
+  .document-body,
+  .editor-pane,
+  .grove-mdxeditor,
+  .mdxeditor-rich-text-editor,
+  .mdxeditor-contenteditable-wrapper,
+  .mdxeditor-root-contenteditable {
+    display: block;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .grove-mdx-content {
+    padding: 0;
+    color: #000;
+  }
+
+  .grove-mdx-content pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .grove-mdx-content table,
+  .grove-mdx-content pre,
+  .grove-mdx-content img,
+  .grove-mdx-content h1,
+  .grove-mdx-content h2,
+  .grove-mdx-content h3 {
+    break-inside: avoid;
+  }
+}

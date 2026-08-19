@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Grove">
+  <rect width="32" height="32" rx="6" fill="#f3f0e7"/>
+  <!-- left sapling -->
+  <path fill="#2f6b3a" d="M8 22 L8 26 L10 26 L10 22 Z"/>
+  <path fill="#2f6b3a" d="M9 8 L4 18 L14 18 Z"/>
+  <!-- center tree -->
+  <path fill="#1c241c" d="M15 20 L15 26 L17 26 L17 20 Z"/>
+  <path fill="#2f6b3a" d="M16 4 L9 16 L23 16 Z"/>
+  <path fill="#3f8a4c" d="M16 9 L11 17 L21 17 Z"/>
+  <!-- right sapling -->
+  <path fill="#2f6b3a" d="M23 22 L23 26 L25 26 L25 22 Z"/>
+  <path fill="#2f6b3a" d="M24 10 L19 19 L29 19 Z"/>
+</svg>
