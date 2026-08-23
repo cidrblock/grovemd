@@ -42,7 +42,6 @@ export function Workspace() {
   const [fileSearchOpen, setFileSearchOpen] = useState(false);
   const [contentSearchOpen, setContentSearchOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(() => loadSidebarOpen(false));
-  const deepLinked = useRef(false);
   const prevPath = useRef<string | null>(null);
 
   // Mobile defaults: drawer closed
@@ -78,12 +77,7 @@ export function Workspace() {
     if (!match) return;
     const fsPath = noteUrlToFsPath(match[1]);
     if (!fsPath) return;
-    if (activePath === fsPath) {
-      deepLinked.current = true;
-      return;
-    }
-    if (deepLinked.current) return;
-    deepLinked.current = true;
+    if (activePath === fsPath) return;
     void openFile(fsPath).catch(() => {
       /* missing note */
     });

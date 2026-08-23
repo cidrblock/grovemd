@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --experimental-strip-types --test src/utils/paths.test.ts"
   },
   "dependencies": {
     "@mdxeditor/editor": "^4.2.0",
