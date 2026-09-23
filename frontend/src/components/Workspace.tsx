@@ -81,7 +81,7 @@ export function Workspace() {
     void openFile(fsPath).catch(() => {
       /* missing note */
     });
-  }, [location.pathname, openFile, activePath]);
+  }, [location.pathname, openFile]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
