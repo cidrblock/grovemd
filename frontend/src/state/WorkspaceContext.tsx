@@ -154,8 +154,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         mtime: doc.mtime,
         saveState: "saved",
       };
-      setTabs((prev) => [...prev, tab]);
-      tabsRef.current = [...tabsRef.current.filter((t) => t.path !== path), tab];
+      setTabs((prev) => [tab, ...prev.filter((t) => t.path !== path)]);
+      tabsRef.current = [tab, ...tabsRef.current.filter((t) => t.path !== path)];
       activateTab(doc.path);
       setStatusMessage("Saved");
       setConflictVisible(false);
