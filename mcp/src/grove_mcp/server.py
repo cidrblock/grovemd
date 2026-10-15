@@ -9,8 +9,10 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
+from mcp.types import CallToolResult, TextContent
 
 from . import notes
+from .mcp_app import GROVE_APP_URI, MCP_APP_MIME_TYPE, grove_app_result, render_grove_app
 
 log = logging.getLogger(__name__)
 
@@ -39,9 +41,15 @@ def _err(exc: Exception) -> str:
     return _dumps({"ok": False, "error": type(exc).__name__, "message": msg, "canned_text": msg})
 
 
-@mcp.tool()
-async def grove_search(query: str, limit: int = 10) -> str:
+@mcp.tool(
+    structured_output=False,
+    meta={"ui": {"resourceUri": GROVE_APP_URI}},
+)
+async def grove_search(query: str, limit: int = 10) -> CallToolResult:
     """Search Grove notes by filename and Markdown content (case-insensitive).
+
+    Give a brief list of matching note titles and previews. Use a returned path
+    with grove_read when the user asks to open a note; don't dump raw JSON.
 
     Args:
         query: Search text (e.g. "solar").
@@ -51,7 +59,7 @@ async def grove_search(query: str, limit: int = 10) -> str:
         hits = notes.search_notes(query, limit=max(1, min(int(limit), 50)))
         if not hits:
             canned = f"No Grove notes matched '{query}'."
-            return _dumps({"ok": True, "query": query, "results": [], "canned_text": canned})
+            return grove_app_result({"ok": True, "query": query, "results": [], "canned_text": canned})
 
         lines = [f"Grove matches for '{query}':"]
         results = []
@@ -72,12 +80,10 @@ async def grove_search(query: str, limit: int = 10) -> str:
             )
         lines.append("Reply with a number to open one.")
         canned = "\n".join(lines)
-        return _dumps(
-            {"ok": True, "query": query, "results": results, "canned_text": canned}
-        )
+        return grove_app_result({"ok": True, "query": query, "results": results, "canned_text": canned})
     except Exception as e:  # noqa: BLE001
         log.exception("grove_search failed")
-        return _err(e)
+        return _grove_error(e)
 
 
 def _note_title(path: str) -> str:
@@ -87,9 +93,14 @@ def _note_title(path: str) -> str:
     return name.replace("-", " ").replace("_", " ")
 
 
-@mcp.tool()
-async def grove_list(prefix: str = "", limit: int = 50) -> str:
+@mcp.tool(
+    structured_output=False,
+    meta={"ui": {"resourceUri": GROVE_APP_URI}},
+)
+async def grove_list(prefix: str = "", limit: int = 50) -> CallToolResult:
     """List Markdown notes under Grove (optional subdirectory prefix).
+
+    Respond with a concise list of note paths, not the raw JSON.
 
     Args:
         prefix: Relative directory (e.g. "home/technology"); empty = all.
@@ -100,11 +111,11 @@ async def grove_list(prefix: str = "", limit: int = 50) -> str:
         if not items:
             where = prefix or "Grove"
             canned = f"No Markdown notes found under {where}."
-            return _dumps({"ok": True, "prefix": prefix, "notes": [], "canned_text": canned})
+            return grove_app_result({"ok": True, "prefix": prefix, "notes": [], "canned_text": canned})
         lines = [f"Grove notes ({len(items)}):"]
         for i, n in enumerate(items, 1):
             lines.append(f"{i}. {n['path']}")
-        return _dumps(
+        return grove_app_result(
             {
                 "ok": True,
                 "prefix": prefix,
@@ -114,25 +125,32 @@ async def grove_list(prefix: str = "", limit: int = 50) -> str:
         )
     except Exception as e:  # noqa: BLE001
         log.exception("grove_list failed")
-        return _err(e)
+        return _grove_error(e)
 
 
-@mcp.tool()
-async def grove_read(path: str) -> str:
+@mcp.tool(
+    structured_output=False,
+    meta={"ui": {"resourceUri": GROVE_APP_URI}},
+)
+async def grove_read(path: str, query: str = "") -> CallToolResult:
     """Read a Grove Markdown note by relative path.
+
+    Summarize the note content for the user and identify its path. Quote only
+    relevant passages when asked.
 
     Args:
         path: Note path relative to Grove root (e.g. "home/solar.md").
+        query: Optional originating search query, used by the App's Back action.
     """
     try:
         doc = notes.read_note(path)
         title = doc["title"]
         body = doc["content"].strip()
         canned = f"# {title}\n\nPath: {doc['path']}\n\n{body}"
-        return _dumps({**doc, "ok": True, "canned_text": canned})
+        return grove_app_result({**doc, "ok": True, "query": query, "canned_text": canned})
     except Exception as e:  # noqa: BLE001
         log.exception("grove_read failed")
-        return _err(e)
+        return _grove_error(e)
 
 
 @mcp.tool()
@@ -173,6 +191,27 @@ def main() -> None:
         mcp.settings.host = args.host
         mcp.settings.port = args.port
         mcp.run(transport="streamable-http")
+
+
+def _grove_error(exc: Exception) -> CallToolResult:
+    message = getattr(exc, "message", None) or str(exc)
+    data = {"ok": False, "error": type(exc).__name__, "message": message, "canned_text": message}
+    return CallToolResult(
+        content=[TextContent(type="text", text=_dumps(data))],
+        structuredContent=data,
+        isError=True,
+    )
+
+
+@mcp.resource(
+    GROVE_APP_URI,
+    name="Grove notes",
+    description="Search Grove Markdown, pick a matching document, and read it.",
+    mime_type=MCP_APP_MIME_TYPE,
+    meta={"ui": {"prefersBorder": False}},
+)
+def grove_app() -> str:
+    return render_grove_app()
 
 
 if __name__ == "__main__":

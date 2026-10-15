@@ -9,6 +9,19 @@ Part of the [Grove (`grovemd`)](../) monorepo. Streamable-HTTP MCP tools over th
 - `grove_read` — read a note
 - `grove_write` — create/overwrite a note
 
+`grove_search`, `grove_list`, and `grove_read` share the `ui://grove/notes` MCP
+App. Search results show a document picker; opening a note shows sanitized
+Markdown with a Back to results action when the search query is available.
+Cogsworth hosts the service App and routes picker messages through its existing
+per-user selection flow. Other MCP App hosts may call `grove_read` directly.
+
+The App frontend source is `web/mcp-app.js`; rebuild the inline resource bundle
+after source changes:
+
+```bash
+npm ci && npm run build:app
+```
+
 ## Local run
 
 ```bash
@@ -28,4 +41,4 @@ systemctl --user enable --now grove-mcp.service
 - Debug: `http://127.0.0.1:3093/mcp`
 - Home Bot / OWUI (podman network): `http://grove-mcp:8000/mcp`
 
-The quadlet mounts this `mcp/` directory and `/mnt/space16/grove-data` as `/data`.
+The quadlet mounts this `mcp/` directory and `/mnt/space8/grove-data` as `/data`.
