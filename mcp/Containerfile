@@ -20,3 +20,8 @@ RUN uv sync --frozen --no-install-project
 # already committed under src/grove_mcp/static/, so node_modules is not needed here.
 COPY . ./
 RUN uv sync --frozen
+
+# The quadlet runs this with UserNS=keep-id:uid=1000,gid=1000 so it can read and write the
+# notes as bthornto, which means /app has to be writable by uid 1000: `uv run` initialises
+# its cache at .cache/uv relative to the working directory and fails without it.
+RUN chown -R 1000:1000 /app
