@@ -1,0 +1,11 @@
+# Build context for the app image. Without this the context carries the dev trees below.
+.git
+frontend/node_modules
+frontend/dist
+backend/.venv
+mcp/node_modules
+mcp/.venv
+mcp/.cache
+__pycache__
+*.pyc
+.pytest_cache

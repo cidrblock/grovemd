@@ -1,0 +1,22 @@
+# grove-mcp image: the code and its uv environment are baked in, so the container mounts
+# only the notes data. ~/github holds the source; /mnt/space8/grove-data holds data.
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+
+# src/grove_mcp/notes.py shells out to ripgrep for its search path; the base image has none.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ripgrep \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy
+
+WORKDIR /app
+
+# Dependencies first, so a source change does not re-resolve them.
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-install-project
+
+# Then the project itself. web/ is only used to build the static app bundle, which is
+# already committed under src/grove_mcp/static/, so node_modules is not needed here.
+COPY . ./
+RUN uv sync --frozen

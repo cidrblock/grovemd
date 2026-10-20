@@ -4,11 +4,11 @@ After=network-online.target
 Wants=network-online.target
 
 [Container]
-Image=ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+# Built from mcp/ in this repo: the code and its uv environment are baked in, so only the
+# notes data is mounted. Deployed as localhost/grove-mcp:<tag> by homelab.services.grove.
+Image=localhost/grove-mcp:0.1.0
 ContainerName=grove-mcp
 PublishPort=127.0.0.1:3093:8000
-# Source lives in the grovemd monorepo (mcp/)
-Volume=/var/home/bthornto/github/grovemd/mcp:/app
 # Same notes tree as Grove UI
 Volume=/mnt/space16/grove-data:/data
 Environment=DATA_ROOT=/data
